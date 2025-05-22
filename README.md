@@ -1,1 +1,1 @@
-# This is a certified front-end project from freeCodeCamp.
+# This is a certified data visualization project from freeCodeCamp.
