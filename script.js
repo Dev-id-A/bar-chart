@@ -1,7 +1,7 @@
 //Size variables
         const w = 1000 
-        const h = 500
-        const padding = 50
+        const h = 600
+        const padding = 100
         
 //Fetching data
         async function fetchData() {
@@ -9,7 +9,6 @@
             try {
                 const response = await fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json")
                 const data = await response.json();
-                     console.log(data.data[150][1]);
                     return data.data;
             }
             catch(error){
@@ -27,14 +26,24 @@
                         .style("background-color", "white");
 
 //Title
-//             svg.append("h1")
-//             .text("hola")
-//             .attr("id", "title")
+            svg.append("text")
+            .text("United States GDP")
+            .attr("id", "title")
+            .attr("x", w/2.6)
+            .attr("y", padding/2);
+
+//GDP addition
+
+            svg.append("text")
+            .text("Gross Domestic Product")
+            .attr("id", "GDP")
+            .attr("x", w/3)
+            .attr("y", -padding*2.8)
+            .attr("transform", `rotate(-90,${w/2},${padding})`);
 
 
         fetchData().
             then(data => {
-                console.log(data);
 
 //yScale related
 
@@ -60,4 +69,16 @@
                     .attr("id", "x-axis")
                     .attr("transform", `translate(0, ${h - padding})`)
                     .call(xAxis);
+
+//Bars adition
+                svg.selectAll("rect")
+                    .data(data)
+                    .enter()
+                    .append("rect")
+                    .attr("class", "bar")
+                    .attr("x", d => xScale(new Date(d[0])))
+                    .attr("y", d => yScale(d[1]))
+                    .attr("width", (w - 2 * padding) / data.length)
+                    .attr("height",d => h - padding - yScale(d[1]))
+                    .attr("fill", "blue")
                 });
