@@ -70,8 +70,8 @@
                     .attr("transform", `translate(0, ${h - padding})`)
                     .call(xAxis);
 
-//Bars adition
-                svg.selectAll("rect")
+//Bars addition
+                const rects = svg.selectAll("rect")
                     .data(data)
                     .enter()
                     .append("rect")
@@ -81,4 +81,39 @@
                     .attr("width", (w - 2 * padding) / data.length)
                     .attr("height",d => h - padding - yScale(d[1]))
                     .attr("fill", "blue")
+
+
+//Tooltip created
+
+                const tooltip = d3.select("body")
+                                    .append("div")
+                                    .attr("id", "tooltip")
+                                    .style("position", "absolute")
+                                    .style("opacity", 0)
+                                    .style("border", "3px solid black")
+                                    .style("padding", "1%")
+                                    .style("background-color", "rgba(67, 132, 168, 0.5)")
+                                    
+
+
+//Tooltip into rects
+                    rects.attr("data-date", d => d[0])
+                            .attr("data-gdp", d=> d[1])
+                            .on("mouseover",(e, d)=>
+
+                                tooltip.style("opacity", 1)
+                                        .style("display", "block")
+                                        .attr("data-date", d[0])
+                                        .html(`Date: ${d[0]}<br> $${d[1]} Billion`)
+                            )
+                            .on("mousemove", e=>
+
+                                tooltip.style("left", (e.pageX + 15) + "px")
+                                        .style("top", (e.pageY - 80) + "px")
+                            )
+                            .on("mouseout", () =>
+
+                                tooltip.style("opacity", 0)
+                                        .style("display", "none")
+                            )
                 });

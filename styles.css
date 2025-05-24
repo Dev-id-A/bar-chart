@@ -15,3 +15,6 @@ body{
 .border{
     border: 3px solid black
 }
+.bar:hover{
+    fill: white;
+}
