@@ -1,8 +1,35 @@
 //Size variables
-        const w = 1000 
-        const h = 600
-        const padding = 100
-        
+        let w = null; 
+        let h = null;
+        let padding = null;
+        let savedData = null;
+        let svg = null;
+        let tooltip = null;
+
+const responsivityFn = () => {
+    if(window.innerWidth < 375){
+        w = 275 
+        h = 170
+        padding = 27.5
+    }
+    else if(window.innerWidth < 768){
+        w = 350 
+        h = 210
+        padding = 35
+    }
+    else if(window.innerWidth < 1024){
+        w = 750 
+        h = 450
+        padding = 75
+    } else if(window.innerWidth > 1024){
+        w = 1000; 
+        h = 600;
+        padding = 100;
+    }
+};
+
+responsivityFn();
+
 //Fetching data
         async function fetchData() {
             
@@ -17,8 +44,11 @@
         }
 
 
+
+
+const createSVG = (data) => {
 //Create svg
-        const svg = d3.select("body")
+        svg = d3.select("body")
                         .append("svg")
                         .style("width", w)
                         .style("height", h)
@@ -27,25 +57,22 @@
 
 //Title
             svg.append("text")
-            .text("United States GDP")
-            .attr("id", "title")
-            .attr("x", w/2.6)
-            .attr("y", padding/2);
+                .text("United States GDP")
+                .attr("id", "title")
+                .attr("x", w/2.8)
+                .attr("y", padding)
+                window.innerWidth < 768 ? d3.select("text").style("font-size", "20px"): "";
 
 //GDP addition
 
             svg.append("text")
             .text("Gross Domestic Product")
             .attr("id", "GDP")
-            .attr("x", w/3)
-            .attr("y", -padding*2.8)
+            .attr("x", w/4)
+            .attr("y", -padding*2.7)
             .attr("transform", `rotate(-90,${w/2},${padding})`);
 
-
-        fetchData().
-            then(data => {
-
-//yScale related
+            //yScale related
 
                 const yScale = d3.scaleLinear()
                                 .domain([0, d3.max(data, d => d[1])])
@@ -80,12 +107,12 @@
                     .attr("y", d => yScale(d[1]))
                     .attr("width", (w - 2 * padding) / data.length)
                     .attr("height",d => h - padding - yScale(d[1]))
-                    .attr("fill", "blue")
+                    .attr("fill", "cadetblue")
 
 
 //Tooltip created
 
-                const tooltip = d3.select("body")
+                        tooltip = d3.select("body")
                                     .append("div")
                                     .attr("id", "tooltip")
                                     .style("position", "absolute")
@@ -116,4 +143,18 @@
                                 tooltip.style("opacity", 0)
                                         .style("display", "none")
                             )
-                });
+        }
+
+        fetchData().
+            then(data => {
+                savedData = data;
+                createSVG(data);
+            });
+
+window.addEventListener("resize", () => {
+    svg ? svg.remove():"" 
+    tooltip.style("display", "none")
+    responsivityFn();
+    savedData ? createSVG(savedData):"";
+})
+
