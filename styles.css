@@ -18,11 +18,19 @@ body{
 .bar:hover{
     fill: white;
 }
-@media (max-width: 500px){
+@media (max-width: 768px){
     svg text{
         font-size: 8px;
     }
     #GDP{
         font-size: 10px;
+    }
+}
+@media (max-width: 375px){
+    svg text{
+        font-size: 6px;
+    }
+    #GDP{
+        font-size: 8px;
     }
 }
